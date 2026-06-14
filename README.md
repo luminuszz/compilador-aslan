@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./images/image-removebg-preview.png" alt="Compiler Logo" width="144">
+</p>
+
 # Compilador ASLAN
 
 Este projeto consiste no desenvolvimento de um compilador completo para uma linguagem de programação imperativa simples, utilizando exclusivamente Python e suas bibliotecas padrão. O projeto foi construído seguindo rigorosos princípios de engenharia de software e teoria de linguagens formais.
@@ -30,7 +34,7 @@ python3 test_runner.py
 
 ---
 
-## 📖 Guia de Apresentação (Para os Integrantes)
+## FAQ
 
 Este guia foi preparado para ajudar a equipe a explicar o funcionamento do compilador de forma didática durante a apresentação do projeto.
 

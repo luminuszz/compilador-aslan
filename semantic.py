@@ -3,18 +3,24 @@
 # Futuramente, importaremos os nós da AST do parser_.py
 # from parser_ import ASTNode, ...
 
+
 class SemanticError(Exception):
     """Exceção para erros semânticos."""
+
     pass
+
 
 class Symbol:
     """Representa um símbolo na tabela (variável, função, etc.)."""
+
     def __init__(self, name, type):
         self.name = name
         self.type = type
 
+
 class SymbolTable:
     """Gerencia os símbolos e escopos."""
+
     def __init__(self):
         # A tabela é uma lista de dicionários, representando a pilha de escopos
         self.scopes = [{}]
@@ -31,7 +37,9 @@ class SymbolTable:
         """Declara um novo símbolo no escopo atual."""
         scope = self.scopes[-1]
         if symbol.name in scope:
-            raise SemanticError(f"Erro: Variável '{symbol.name}' já declarada neste escopo.")
+            raise SemanticError(
+                f"Erro: Variável '{symbol.name}' já declarada neste escopo."
+            )
         scope[symbol.name] = symbol
 
     def lookup(self, name):
@@ -41,14 +49,16 @@ class SymbolTable:
                 return scope[name]
         return None
 
+
 class SemanticAnalyzer:
     """Percorre a AST e realiza a análise semântica."""
+
     def __init__(self):
         self.symtab = SymbolTable()
 
     def visit(self, node):
         """Método de despacho para visitar o nó correto."""
-        method_name = f'visit_{node.__class__.__name__}'
+        method_name = f"visit_{node.__class__.__name__}"
         # getattr(object, name, default)
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
@@ -57,7 +67,7 @@ class SemanticAnalyzer:
         """Método genérico para visitar nós que não têm um método 'visit_' específico."""
         # Esta é uma abordagem simples; pode ser necessário torná-la mais robusta
         # para percorrer todos os filhos de um nó genérico.
-        raise Exception(f'Nenhum método visit_{node.__class__.__name__} encontrado')
+        raise Exception(f"Nenhum método visit_{node.__class__.__name__} encontrado")
 
     def visit_Programa(self, node):
         for statement in node.declaracoes:
@@ -69,12 +79,14 @@ class SemanticAnalyzer:
         received_type = None
         if node.expressao:
             received_type = self.visit(node.expressao)
-        
+
         # 2. Verifica se o tipo recebido é compatível com o tipo declarado
-        expected_type = node.tipo.type # 'INT' ou 'BOOL'
+        expected_type = node.tipo.type  # 'INT' ou 'BOOL'
         if received_type and received_type != expected_type:
-            raise SemanticError(f"Erro: Tipo incompatível para a variável '{node.nome_variavel.nome}'. Esperado '{expected_type}', mas recebeu '{received_type}'.")
-        
+            raise SemanticError(
+                f"Erro: Tipo incompatível para a variável '{node.nome_variavel.nome}'. Esperado '{expected_type}', mas recebeu '{received_type}'."
+            )
+
         # 3. Declara a nova variável na tabela de símbolos
         symbol = Symbol(name=node.nome_variavel.nome, type=expected_type)
         self.symtab.declare(symbol)
@@ -86,14 +98,16 @@ class SemanticAnalyzer:
         symbol = self.symtab.lookup(symbol_name)
         if not symbol:
             raise SemanticError(f"Erro: Variável '{symbol_name}' não declarada.")
-        
+
         # 2. Obtém o tipo da nova expressão
         received_type = self.visit(node.expressao)
-        
+
         # 3. Verifica compatibilidade de tipos
         if symbol.type != received_type:
-             raise SemanticError(f"Erro: Tipo incompatível na atribuição para '{symbol_name}'. Esperado '{symbol.type}', mas recebeu '{received_type}'.")
-        
+            raise SemanticError(
+                f"Erro: Tipo incompatível na atribuição para '{symbol_name}'. Esperado '{symbol.type}', mas recebeu '{received_type}'."
+            )
+
         return symbol.type
 
     def visit_ComandoPrint(self, node):
@@ -111,38 +125,46 @@ class SemanticAnalyzer:
         # Visita ambos os lados e obtém seus tipos
         type_left = self.visit(node.esquerda)
         type_right = self.visit(node.direita)
-        
+
         op_type = node.op.type
-        
+
         # Lógica de tipos para operadores aritméticos
-        if op_type in ('MAIS', 'MENOS', 'MULT', 'DIV'):
-            if type_left == 'INT' and type_right == 'INT':
-                return 'INT'
+        if op_type in ("MAIS", "MENOS", "MULT", "DIV"):
+            if type_left == "INT" and type_right == "INT":
+                return "INT"
             else:
-                raise SemanticError(f"Erro: Operação aritmética '{op_type}' exige operandos do tipo 'INT'.")
-        
+                raise SemanticError(
+                    f"Erro: Operação aritmética '{op_type}' exige operandos do tipo 'INT'."
+                )
+
         # Lógica de tipos para operadores de comparação
-        if op_type in ('MAIOR', 'MENOR', 'MAIOR_IGUAL', 'MENOR_IGUAL'):
-            if type_left == 'INT' and type_right == 'INT':
-                return 'BOOL'
+        if op_type in ("MAIOR", "MENOR", "MAIOR_IGUAL", "MENOR_IGUAL"):
+            if type_left == "INT" and type_right == "INT":
+                return "BOOL"
             else:
-                raise SemanticError(f"Erro: Operação de comparação '{op_type}' exige operandos do tipo 'INT'.")
-        
+                raise SemanticError(
+                    f"Erro: Operação de comparação '{op_type}' exige operandos do tipo 'INT'."
+                )
+
         # Lógica de tipos para igualdade
-        if op_type in ('IGUAL_COMP', 'DIFERENTE'):
+        if op_type in ("IGUAL_COMP", "DIFERENTE"):
             if type_left == type_right:
-                return 'BOOL'
+                return "BOOL"
             else:
-                raise SemanticError(f"Erro: Operação de igualdade '{op_type}' exige operandos do mesmo tipo.")
-        
+                raise SemanticError(
+                    f"Erro: Operação de igualdade '{op_type}' exige operandos do mesmo tipo."
+                )
+
         return None
 
     def visit_ComandoIf(self, node):
         # A condição do IF DEVE ser booleana
         cond_type = self.visit(node.condicao)
-        if cond_type != 'BOOL':
-            raise SemanticError(f"Erro: A condição do 'if' deve ser 'BOOL', mas recebeu '{cond_type}'.")
-        
+        if cond_type != "BOOL":
+            raise SemanticError(
+                f"Erro: A condição do 'if' deve ser 'BOOL', mas recebeu '{cond_type}'."
+            )
+
         self.visit(node.bloco_then)
         if node.bloco_else:
             self.visit(node.bloco_else)
@@ -151,9 +173,11 @@ class SemanticAnalyzer:
     def visit_ComandoWhile(self, node):
         # A condição do WHILE DEVE ser booleana
         cond_type = self.visit(node.condicao)
-        if cond_type != 'BOOL':
-            raise SemanticError(f"Erro: A condição do 'while' deve ser 'BOOL', mas recebeu '{cond_type}'.")
-        
+        if cond_type != "BOOL":
+            raise SemanticError(
+                f"Erro: A condição do 'while' deve ser 'BOOL', mas recebeu '{cond_type}'."
+            )
+
         self.visit(node.bloco)
         return None
 
@@ -172,7 +196,7 @@ class SemanticAnalyzer:
         return symbol.type
 
     def visit_Numero(self, node):
-        return 'INT'
+        return "INT"
 
     def visit_Booleano(self, node):
-        return 'BOOL'
+        return "BOOL"
