@@ -75,11 +75,3 @@ Este guia foi preparado para ajudar a equipe a explicar o funcionamento do compi
 
 Para uma análise profunda de cada classe, método e complexidade Big-O de cada etapa, consulte o arquivo **[DOCS.md](./DOCS.md)**.
 
-### Resumo das Fases Concluídas:
--   **✅ Análise Léxica:** Reconhecimento completo de tokens e tratamento de erros de linha/coluna.
--   **✅ Análise Sintática:** Construção de AST com precedência de operadores e estruturas complexas.
--   **✅ Análise Semântica:** Tabela de símbolos com suporte a múltiplos escopos e *Type Checking*.
--   **✅ Otimização:** Implementação de *Constant Folding*.
--   **✅ IR & Code Gen:** Geração de TAC e Bytecode resolvida.
--   **✅ Máquina Virtual:** Execução funcional com suporte a `read` e `print`.
----
