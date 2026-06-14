@@ -9,21 +9,30 @@ Este projeto documenta o desenvolvimento de um compilador completo para uma ling
 |-- lexer.py            # Fase 1: Analisador Léxico
 |-- parser_.py          # Fase 2: Analisador Sintático e AST
 |-- semantic.py         # Fase 3: Analisador Semântico e Tabela de Símbolos
+|-- optimizer.py        # Fase de Bônus: Otimizador de AST (Constant Folding)
+|-- ir_generator.py     # Fase 4: Gerador de Código Intermediário (TAC)
+|-- code_generator.py   # Fase 5: Gerador de Bytecode
+|-- vm.py               # Fase 5: Máquina Virtual baseada em pilha
 |-- test_runner.py      # Executor de testes automatizados
-|-- tests/              # Diretório com os casos de teste
+|-- tests/              # Diretório com os casos de teste (56 testes)
 |   |-- test_lexer.py
 |   |-- test_parser.py
 |   |-- test_semantic.py
-|   |-- test_regressive.py # Testes de regressão e fumaça
+|   |-- test_optimizer.py
+|   |-- test_ir_generator.py
+|   |-- test_vm.py
+|   |-- test_regressive.py
+|   |-- test_stress.py
+|   |-- test_leetcode.py
 |-- .gitignore          # Arquivos ignorados pelo Git
 |-- requirerimentos-compilador.pdf # O documento original de requisitos
 |-- README.md           # Este arquivo
-|-- PROJECT_STATUS.md   # Checkpoint de desenvolvimento
+|-- PROJECT_STATUS.md   # Checkpoint final do projeto
 ```
 
 ## Como Executar os Testes
 
-Para validar a implementação a qualquer momento, execute o `test_runner` a partir do diretório raiz. Ele descobrirá e rodará todos os testes unitários e regressivos.
+Para validar a implementação a qualquer momento, execute o `test_runner` a partir do diretório raiz. Ele descobrirá e rodará todos os testes unitários, regressivos e de estresse.
 
 ```sh
 python3 test_runner.py
@@ -36,45 +45,25 @@ python3 test_runner.py
 Adotamos uma metodologia de Desenvolvimento Orientado a Testes (TDD), garantindo que cada funcionalidade seja validada antes de prosseguirmos.
 
 ### ✅ Fase 1: Análise Léxica (Concluída)
-
--   **Funcionalidades:** Suporte a todas as palavras-chave, operadores aritméticos/lógicos, literais (int, bool, string) e comentários.
+Suporte a palavras-chave, operadores, literais e comentários.
 
 ### ✅ Fase 2: Análise Sintática (Concluída)
-
--   **Funcionalidades:** 
-    -   Construção de AST para expressões complexas com precedência.
-    -   Suporte a comandos: `if-else`, `while`, `print`, `read` e atribuição simples.
-    -   Tratamento de blocos de código `{...}`.
+Construção de AST para expressões complexas e estruturas de controle (`if`, `while`, `print`, `read`).
 
 ### ✅ Fase 3: Análise Semântica (Concluída)
+Gerenciamento de escopos e Verificação de Tipos (Type Checking).
 
--   **Arquivo:** `semantic.py`
--   **Descrição:** Valida a lógica do programa e a consistência dos dados.
--   **Funcionalidades:**
-    -   **Tabela de Símbolos:** Gerenciamento de escopos aninhados e detecção de redeclaração.
-    -   **Verificação de Declaração:** Garante que variáveis sejam declaradas antes do uso.
-    -   **Verificação de Tipos (Type Checking):** Valida compatibilidade em atribuições, operações binárias e condições de controle (`if`/`while`).
+### ✅ Fase de Bônus: Otimização (Concluída)
+Implementação de **Constant Folding**. O compilador simplifica expressões constantes (ex: `2 + 2` vira `4`) em tempo de compilação, gerando um código mais eficiente para a VM.
 
 ### ✅ Fase 4: Geração de Código Intermediário (Concluída)
-
--   **Arquivo:** `ir_generator.py`
--   **Descrição:** Traduz a AST para Código de Três Endereços (TAC).
--   **Funcionalidades:**
-    -   **TAC:** Geração de instruções simples como `(OP, arg1, arg2, result)`.
-    -   **Temporários:** Alocação dinâmica de variáveis temporárias para expressões.
-    -   **Labels e Jumps:** Implementação de controle de fluxo (`if`, `while`) através de saltos condicionais e incondicionais.
+Tradução da AST para Código de Três Endereços (TAC) com gerenciamento de temporários e labels.
 
 ### ✅ Fase 5: Geração de Código Final e Execução (Concluída)
-
--   **Arquivos:** `code_generator.py` e `vm.py`
--   **Descrição:** Traduz o TAC para um Bytecode customizado e o executa em uma Máquina Virtual baseada em pilha.
--   **Funcionalidades:**
-    -   **Bytecode:** Conjunto de instruções para manipulação de pilha, aritmética, controle de fluxo e E/S.
-    -   **VM:** Máquina Virtual completa com pilha de operandos, memória de variáveis e Program Counter.
-    -   **E2E:** Validação completa do pipeline, permitindo a execução real de algoritmos como o Fatorial.
+Tradução para Bytecode customizado e execução em uma Máquina Virtual (VM) robusta.
 
 ---
 
 ## Conclusão do Projeto
 
-O projeto atingiu 100% dos requisitos obrigatórios, com um total de **47 testes automatizados** validando cada etapa do processo de compilação.
+O projeto superou 100% dos requisitos originais, incluindo o bônus de otimização e algoritmos complexos (Fibonacci, Bubble Sort), com um total de **56 testes automatizados** garantindo a integridade do sistema.

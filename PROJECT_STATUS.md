@@ -1,25 +1,36 @@
-# Checkpoint do Projeto Compilador
+# Checkpoint Final do Projeto Compilador
 
-Este documento salva o estado do desenvolvimento para referência futura.
+Este documento encerra o estado do desenvolvimento com todos os requisitos e bônus concluídos.
 
-**Data do Checkpoint:** 13 de Junho de 2026 (Atualizado)
+**Data de Finalização:** 13 de Junho de 2026
 
-## Resumo
+## Resumo Executivo
 
-Finalizamos todas as cinco fases do compilador (Léxica, Sintática, Semântica, Geração de IR e Geração de Código Final/VM). O compilador agora é um sistema completo e funcional, capaz de compilar e executar programas na linguagem alvo. O projeto encerra com **47 testes automatizados** e 100% de cobertura dos requisitos.
+O projeto foi concluído com sucesso, atingindo um estado de alta maturidade e estabilidade. O compilador é capaz de realizar todo o ciclo de tradução: desde o código-fonte em alto nível até a execução em uma Máquina Virtual, passando por validação semântica e otimização de código.
 
-## Última Etapa Concluída: Fase 5 (Geração de Código Final e Execução)
+## Marcos Alcançados
 
-A implementação da Máquina Virtual e do Gerador de Bytecode concluiu o projeto. O sistema agora possui:
-- Tradução de TAC para Bytecode de pilha.
-- Máquina Virtual (VM) robusta para execução.
-- Suporte a entrada/saída (read/print).
-- Testes End-to-End validando o pipeline completo.
+- **Robustez Integrada:** 56 testes automatizados cobrindo Lexer, Parser, Semântica, Otimização, IR e VM.
+- **Otimização (Bônus):** Implementação de *Constant Folding* (Simplificação de Constantes) e avaliação de expressões booleanas em tempo de compilação.
+- **Capacidade Algorítmica:** Sucesso na execução de algoritmos de Fibonacci, Fatorial, Bubble Sort e Busca Binária.
+- **Arquitetura Escalonável:** Uso extensivo do padrão *Visitor*, facilitando a manutenção e a adição de novas fases.
 
 ## Estado Final dos Arquivos
 
-- **`lexer.py`**, **`parser_.py`**, **`semantic.py`**, **`ir_generator.py`**: Todos estáveis e integrados.
-- **`code_generator.py`**, **`vm.py`**: Concluídos e testados.
-- **Suite de Testes**: 47 testes passando (incluindo unitários e regressivos E2E).
+| Módulo | Status | Responsabilidade |
+| :--- | :--- | :--- |
+| `lexer.py` | ✅ Estável | Tokenização e análise léxica. |
+| `parser_.py` | ✅ Estável | Construção da AST e análise sintática. |
+| `semantic.py` | ✅ Estável | Verificação de tipos e gerenciamento de escopos. |
+| `optimizer.py` | ✅ Estável | Otimização de AST (Constant Folding). |
+| `ir_generator.py` | ✅ Estável | Geração de Código de Três Endereços (TAC). |
+| `code_generator.py`| ✅ Estável | Tradução de TAC para Bytecode. |
+| `vm.py` | ✅ Estável | Máquina Virtual baseada em pilha. |
 
-## Projeto Concluído com Sucesso! 🏁
+## Próximos Passos (Sugestões de Evolução)
+
+1.  Suporte para Arrays nativos na linguagem (atualmente simulados via variáveis).
+2.  Suporte para funções e procedimentos com passagem de parâmetros.
+3.  Implementação de *Dead Code Elimination* adicional no otimizador.
+
+**Projeto finalizado e validado. Pronto para entrega.** 🏁
