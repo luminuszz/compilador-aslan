@@ -24,6 +24,14 @@ class Atribuicao(ASTNode):
         self.nome_variavel = nome_variavel
         self.expressao = expressao
 
+class ComandoPrint(ASTNode):
+    def __init__(self, expressao):
+        self.expressao = expressao
+
+class ComandoRead(ASTNode):
+    def __init__(self, nome_variavel):
+        self.nome_variavel = nome_variavel
+
 class OperacaoBinaria(ASTNode):
     def __init__(self, esquerda, op, direita):
         self.esquerda = esquerda
@@ -34,6 +42,11 @@ class Numero(ASTNode):
     def __init__(self, token: Token):
         self.token = token
         self.valor = int(token.value)
+
+class Booleano(ASTNode):
+    def __init__(self, token: Token):
+        self.token = token
+        self.valor = (token.type == 'TRUE')
 
 class Identificador(ASTNode):
     def __init__(self, token: Token):
@@ -49,6 +62,11 @@ class ComandoIf(ASTNode):
         self.condicao = condicao
         self.bloco_then = bloco_then
         self.bloco_else = bloco_else
+
+class ComandoWhile(ASTNode):
+    def __init__(self, condicao, bloco):
+        self.condicao = condicao
+        self.bloco = bloco
         
 # --- Parser ---
 
@@ -91,16 +109,59 @@ class Parser:
         return Programa(declaracoes)
 
     def statement(self):
-        """statement : declaracao_variavel | comando"""
+        """statement : declaracao_variavel | comando_if | comando_while | comando_print | comando_read | atribuicao | comando_bloco"""
         if self.token_atual.type in ('INT', 'BOOL'):
             return self.declaracao_variavel()
         elif self.token_atual.type == 'IF':
             return self.comando_if()
+        elif self.token_atual.type == 'WHILE':
+            return self.comando_while()
+        elif self.token_atual.type == 'PRINT':
+            return self.comando_print()
+        elif self.token_atual.type == 'READ':
+            return self.comando_read()
+        elif self.token_atual.type == 'IDENTIFICADOR':
+            return self.atribuicao()
         elif self.token_atual.type == 'LCHAVE':
             return self.comando_bloco()
         else:
-            # Futuramente, podemos adicionar 'WHILE', 'PRINT', atribuições, etc.
-            raise ParserError(f"Comando ou declaração inesperado(a): {self.token_atual.type}")
+            raise ParserError(f"Comando ou declaração inesperado(a): {self.token_atual.type} na linha {self.token_atual.line}")
+
+    def comando_print(self):
+        """comando_print : PRINT LPAREN expressao RPAREN ';'"""
+        self._consumir('PRINT')
+        self._consumir('LPAREN')
+        expr = self.expressao()
+        self._consumir('RPAREN')
+        self._consumir('PONTO_VIRGULA')
+        return ComandoPrint(expr)
+
+    def comando_read(self):
+        """comando_read : READ LPAREN IDENTIFICADOR RPAREN ';'"""
+        self._consumir('READ')
+        self._consumir('LPAREN')
+        id_node = self.identificador()
+        self._consumir('RPAREN')
+        self._consumir('PONTO_VIRGULA')
+        return ComandoRead(id_node)
+
+    def atribuicao(self):
+        """atribuicao : IDENTIFICADOR '=' expressao ';'"""
+        id_node = self.identificador()
+        self._consumir('IGUAL')
+        expr = self.expressao()
+        self._consumir('PONTO_VIRGULA')
+        return Atribuicao(id_node, expr)
+
+
+    def comando_while(self):
+        """comando_while : WHILE LPAREN expressao RPAREN statement"""
+        self._consumir('WHILE')
+        self._consumir('LPAREN')
+        condicao = self.expressao()
+        self._consumir('RPAREN')
+        bloco = self.statement()
+        return ComandoWhile(condicao, bloco)
 
     def comando_if(self):
         """comando_if : IF LPAREN expressao RPAREN statement (ELSE statement)?"""
@@ -199,11 +260,14 @@ class Parser:
         return self.primario()
 
     def primario(self):
-        """primario : NUMERO | IDENTIFICADOR | LPAREN expressao RPAREN"""
+        """primario : NUMERO | BOOLEANO | IDENTIFICADOR | LPAREN expressao RPAREN"""
         token = self.token_atual
         if token.type == 'NUMERO':
             self._consumir('NUMERO')
             return Numero(token)
+        elif token.type in ('TRUE', 'FALSE'):
+            self._consumir(token.type)
+            return Booleano(token)
         elif token.type == 'IDENTIFICADOR':
             return self.identificador()
         elif token.type == 'LPAREN':

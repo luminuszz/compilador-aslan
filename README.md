@@ -8,17 +8,22 @@ Este projeto documenta o desenvolvimento de um compilador completo para uma ling
 /
 |-- lexer.py            # Fase 1: Analisador Léxico
 |-- parser_.py          # Fase 2: Analisador Sintático e AST
+|-- semantic.py         # Fase 3: Analisador Semântico e Tabela de Símbolos
 |-- test_runner.py      # Executor de testes automatizados
 |-- tests/              # Diretório com os casos de teste
 |   |-- test_lexer.py
 |   |-- test_parser.py
+|   |-- test_semantic.py
+|   |-- test_regressive.py # Testes de regressão e fumaça
+|-- .gitignore          # Arquivos ignorados pelo Git
 |-- requirerimentos-compilador.pdf # O documento original de requisitos
 |-- README.md           # Este arquivo
+|-- PROJECT_STATUS.md   # Checkpoint de desenvolvimento
 ```
 
 ## Como Executar os Testes
 
-Para validar a implementação a qualquer momento, execute o `test_runner` a partir do diretório raiz. Ele descobrirá e rodará todos os testes unitários das fases concluídas.
+Para validar a implementação a qualquer momento, execute o `test_runner` a partir do diretório raiz. Ele descobrirá e rodará todos os testes unitários e regressivos.
 
 ```sh
 python3 test_runner.py
@@ -32,39 +37,32 @@ Adotamos uma metodologia de Desenvolvimento Orientado a Testes (TDD), garantindo
 
 ### ✅ Fase 1: Análise Léxica (Concluída)
 
--   **Arquivo:** `lexer.py`
--   **Descrição:** O analisador léxico foi implementado e exaustivamente testado. Ele processa o código-fonte e o converte em uma sequência de tokens.
--   **Funcionalidades:**
-    -   Reconhecimento de palavras-chave (`if`, `while`, `int`, etc.).
-    -   Reconhecimento de operadores aritméticos e de comparação.
-    -   Análise de literais (números, strings, booleanos).
-    -   Capacidade de ignorar espaços em branco e comentários.
-    -   Relatório de erros para caracteres inválidos, com indicação de linha e coluna.
+-   **Funcionalidades:** Suporte a todas as palavras-chave, operadores aritméticos/lógicos, literais (int, bool, string) e comentários.
 
 ### ✅ Fase 2: Análise Sintática (Concluída)
 
--   **Arquivo:** `parser_.py`
--   **Descrição:** O analisador sintático valida a sequência de tokens de acordo com a gramática da linguagem e constrói uma Árvore de Sintaxe Abstrata (AST) para representar a estrutura do programa.
+-   **Funcionalidades:** 
+    -   Construção de AST para expressões complexas com precedência.
+    -   Suporte a comandos: `if-else`, `while`, `print`, `read` e atribuição simples.
+    -   Tratamento de blocos de código `{...}`.
+
+### ✅ Fase 3: Análise Semântica (Concluída)
+
+-   **Arquivo:** `semantic.py`
+-   **Descrição:** Valida a lógica do programa e a consistência dos dados.
 -   **Funcionalidades:**
-    -   **Análise de Expressões:** Lida com expressões aritméticas e de comparação, respeitando a **precedência de operadores** (ex: `*` antes de `+`) e o uso de **parênteses**.
-    -   **Declarações de Variáveis:** Consegue analisar `int x = ...;`.
-    -   **Estruturas de Controle:** Implementado o parsing para o comando `if` e blocos de código aninhados (`{...}`).
+    -   **Tabela de Símbolos:** Gerenciamento de escopos aninhados e detecção de redeclaração.
+    -   **Verificação de Declaração:** Garante que variáveis sejam declaradas antes do uso.
+    -   **Verificação de Tipos (Type Checking):** Valida compatibilidade em atribuições, operações binárias e condições de controle (`if`/`while`).
 
 ---
 
 ## Próximas Etapas
 
-### ➡️ Fase 3: Análise Semântica
+### ➡️ Fase 4: Geração de Código Intermediário (IR)
 
-O próximo grande passo é garantir que o código, embora sintaticamente correto, também faça sentido lógico.
--   **Tabela de Símbolos:** Criar uma estrutura para registrar todas as variáveis declaradas, seus tipos e escopos.
--   **Verificação de Tipos:** Garantir que as operações sejam válidas (ex: não permitir `10 + true`).
--   **Verificação de Escopo:** Garantir que uma variável não seja usada fora de onde foi declarada ou antes de ser declarada.
+Tradução da AST para **Código de Três Endereços (TAC)** ou similar, facilitando futuras otimizações.
 
-### 🔲 Fase 4: Geração de Código Intermediário (IR)
+### 🔲 Fase 5: Geração de Código Final e Execução
 
-Após a validação semântica, a AST será traduzida para uma representação de baixo nível, independente de máquina, como o **Código de Três Endereços (TAC)**.
-
-### 🔲 Fase 5: Geração de Código Final
-
-A etapa final será traduzir o código intermediário para algo executável. O plano é gerar um **Bytecode** customizado e construir uma pequena **Máquina Virtual (VM)** em Python para executá-lo.
+Tradução para **Bytecode** e implementação de uma **Máquina Virtual (VM)** para execução do código gerado.
