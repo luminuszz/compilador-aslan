@@ -8,17 +8,145 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from lexer import Lexer
 from parser_ import Parser
 from semantic import SemanticAnalyzer, SemanticError
+from ir_generator import IRGenerator
+from code_generator import CodeGenerator
+from vm import VirtualMachine
 
 class TestRegressive(unittest.TestCase):
     
     def _run_full_analysis(self, code):
-        """Helper para rodar lexer, parser e semantic analyzer."""
+        """Helper para rodar lexer, parser e semantic analyzer (Validação)."""
         lexer = Lexer(code)
         tokens = lexer.tokenize()
         parser = Parser(tokens)
         ast = parser.parse()
         analyzer = SemanticAnalyzer()
         return analyzer.visit(ast)
+
+    def _get_ir_pipeline(self, code):
+        """Helper para rodar o pipeline completo até o IR (TAC)."""
+        lexer = Lexer(code)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        
+        analyzer = SemanticAnalyzer()
+        analyzer.visit(ast)
+        
+        generator = IRGenerator()
+        return generator.visit(ast)
+
+    def _execute_e2e(self, code, inputs=None):
+        """Helper para rodar o pipeline completo do código fonte até a execução na VM."""
+        tac = self._get_ir_pipeline(code)
+        cg = CodeGenerator(tac)
+        bytecode = cg.generate()
+        vm = VirtualMachine(bytecode)
+        if inputs:
+            vm.inputs = inputs
+        vm.run()
+        return vm.output
+
+    def test_e2e_read_command(self):
+        """Teste End-to-End: Verifica o comando read."""
+        code = """
+        int x;
+        read(x);
+        print(x * 2);
+        """
+        # Simulamos a entrada '10'
+        output = self._execute_e2e(code, inputs=['10'])
+        self.assertEqual(output, ['20'])
+
+    def test_e2e_factorial(self):
+        """Teste End-to-End: Calcula o fatorial de 5."""
+        code = """
+        int n = 5;
+        int fact = 1;
+        while (n > 1) {
+            fact = fact * n;
+            n = n - 1;
+        }
+        print(fact);
+        """
+        output = self._execute_e2e(code)
+        self.assertEqual(output, ['120'])
+
+    def test_e2e_arithmetic_precedence(self):
+        """Teste End-to-End: Verifica a precedência aritmética na prática."""
+        code = "print(10 + 5 * 2);" # 10 + 10 = 20
+        output = self._execute_e2e(code)
+        self.assertEqual(output, ['20'])
+        
+        code = "print((10 + 5) * 2);" # 15 * 2 = 30
+        output = self._execute_e2e(code)
+        self.assertEqual(output, ['30'])
+
+    def test_e2e_if_else_logic(self):
+        """Teste End-to-End: Verifica a lógica do IF-ELSE."""
+        code = """
+        int a = 10;
+        if (a > 5) {
+            print(1);
+        } else {
+            print(0);
+        }
+        """
+        output = self._execute_e2e(code)
+        self.assertEqual(output, ['1'])
+
+        code = """
+        int a = 2;
+        if (a > 5) {
+            print(1);
+        } else {
+            print(0);
+        }
+        """
+        output = self._execute_e2e(code)
+        self.assertEqual(output, ['0'])
+
+    def test_factorial_full_pipeline(self):
+        """Teste de regressão: Pipeline completo para o algoritmo de fatorial."""
+        code = """
+        int n = 5;
+        int fact = 1;
+        while (n > 1) {
+            fact = fact * n;
+            n = n - 1;
+        }
+        print(fact);
+        """
+        ir = self._get_ir_pipeline(code)
+        
+        # Verificamos se as instruções cruciais do TAC estão lá na ordem correta
+        # O TAC deve conter a estrutura de loop com labels e jumps
+        opcodes = [instr[0] for instr in ir]
+        
+        self.assertIn('ASSIGN', opcodes)
+        self.assertIn('LABEL', opcodes)
+        self.assertIn('MAIOR', opcodes)
+        self.assertIn('JUMP_IF_FALSE', opcodes)
+        self.assertIn('MULT', opcodes)
+        self.assertIn('MENOS', opcodes)
+        self.assertIn('JUMP', opcodes)
+        self.assertIn('PRINT', opcodes)
+
+    def test_complex_nested_if_ir(self):
+        """Teste de regressão: IR para IFs aninhados com expressões complexas."""
+        code = """
+        int a = 10;
+        if (a > 5) {
+            if (a < 20) {
+                print(1);
+            }
+        }
+        """
+        ir = self._get_ir_pipeline(code)
+        
+        # Deve ter pelo menos 4 labels para gerenciar os dois IFs
+        labels = [instr for instr in ir if instr[0] == 'LABEL']
+        self.assertGreaterEqual(len(labels), 4)
 
     def test_deep_expression_precedence(self):
         """Fase 2/3: Expressão complexa com precedência e tipos corretos."""

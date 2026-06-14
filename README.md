@@ -55,14 +55,26 @@ Adotamos uma metodologia de Desenvolvimento Orientado a Testes (TDD), garantindo
     -   **Verificação de Declaração:** Garante que variáveis sejam declaradas antes do uso.
     -   **Verificação de Tipos (Type Checking):** Valida compatibilidade em atribuições, operações binárias e condições de controle (`if`/`while`).
 
+### ✅ Fase 4: Geração de Código Intermediário (Concluída)
+
+-   **Arquivo:** `ir_generator.py`
+-   **Descrição:** Traduz a AST para Código de Três Endereços (TAC).
+-   **Funcionalidades:**
+    -   **TAC:** Geração de instruções simples como `(OP, arg1, arg2, result)`.
+    -   **Temporários:** Alocação dinâmica de variáveis temporárias para expressões.
+    -   **Labels e Jumps:** Implementação de controle de fluxo (`if`, `while`) através de saltos condicionais e incondicionais.
+
+### ✅ Fase 5: Geração de Código Final e Execução (Concluída)
+
+-   **Arquivos:** `code_generator.py` e `vm.py`
+-   **Descrição:** Traduz o TAC para um Bytecode customizado e o executa em uma Máquina Virtual baseada em pilha.
+-   **Funcionalidades:**
+    -   **Bytecode:** Conjunto de instruções para manipulação de pilha, aritmética, controle de fluxo e E/S.
+    -   **VM:** Máquina Virtual completa com pilha de operandos, memória de variáveis e Program Counter.
+    -   **E2E:** Validação completa do pipeline, permitindo a execução real de algoritmos como o Fatorial.
+
 ---
 
-## Próximas Etapas
+## Conclusão do Projeto
 
-### ➡️ Fase 4: Geração de Código Intermediário (IR)
-
-Tradução da AST para **Código de Três Endereços (TAC)** ou similar, facilitando futuras otimizações.
-
-### 🔲 Fase 5: Geração de Código Final e Execução
-
-Tradução para **Bytecode** e implementação de uma **Máquina Virtual (VM)** para execução do código gerado.
+O projeto atingiu 100% dos requisitos obrigatórios, com um total de **47 testes automatizados** validando cada etapa do processo de compilação.
