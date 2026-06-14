@@ -2,37 +2,38 @@
 
 Este documento salva o estado do desenvolvimento para referência futura.
 
-**Data do Checkpoint:** 13 de Junho de 2026
+**Data do Checkpoint:** 24 de Maio de 2024
 
 ## Resumo
 
-Finalizamos com sucesso as duas primeiras fases do compilador (Análise Léxica e Sintática), seguindo uma metodologia TDD. O projeto está em um estado estável, com todos os 14 testes passando.
+Finalizamos com sucesso as três primeiras fases do compilador (Análise Léxica, Sintática e Semântica), seguindo uma metodologia TDD. O projeto está em um estado estável, integrando a validação de tipos e escopo, com todos os 16 testes passando.
 
-## Última Etapa Concluída: Fase 2 (Análise Sintática)
+## Última Etapa Concluída: Fase 3 (Análise Semântica)
 
-O parser foi a última parte implementada. Ele é capaz de:
-- Analisar expressões aritméticas e de comparação complexas.
-- Respeitar a precedência de operadores (ex: `*` antes de `+`).
-- Lidar com o agrupamento forçado por parênteses.
-- Analisar estruturas de controle `if` e blocos de código aninhados (`{...}`).
-- Construir uma Árvore de Sintaxe Abstrata (AST) que reflete a estrutura do código.
+O analisador semântico foi concluído, garantindo a integridade lógica do código:
+- **Tabela de Símbolos:** Implementação de escopos aninhados para variáveis.
+- **Verificação de Tipos:** Validação de compatibilidade em operações aritméticas e lógicas.
+- **Declaração Prévia:** Detecção de uso de variáveis não declaradas ou declarações duplicadas.
+- **Integração:** O pipeline `Lexer -> Parser -> Semantic` está funcional via `main.py`.
 
 ## Estado dos Arquivos
 
 - **`lexer.py`**: Concluído e estável.
 - **`parser_.py`**: Concluído e estável para os requisitos atuais.
+- **`semantic.py`**: Concluído e integrado.
+- **`main.py`**: Ponto de entrada do compilador implementado.
 - **`test_runner.py`**: Concluído e funcional.
 - **`tests/test_lexer.py`**: Concluído, 8 testes passando.
 - **`tests/test_parser.py`**: Concluído, 6 testes passando.
+- **`tests/test_semantic.py`**: Concluído, 2 testes passando.
 
 ## Próximo Passo Imediato
 
-O trabalho será retomado no início da **Fase 3: Análise Semântica**.
+O trabalho será retomado na **Fase 4: Geração de Código Intermediário (IR)**.
 
-1.  **Ação a ser tomada:** Criar o arquivo `semantic.py`.
-2.  **Primeira Tarefa:** Dentro de `semantic.py`, implementar as classes `TabelaDeSimbolos` (para gerenciar escopos e variáveis) e `AnalisadorSemantico` (que irá percorrer a AST).
-3.  **Primeiro Teste:** Criar o arquivo `tests/test_semantic.py` e adicionar um caso de teste que verifique se o `AnalisadorSemantico` levanta um `SemanticError` ao tentar usar uma variável que não foi declarada.
-
+1.  **Ação a ser tomada:** Criar o arquivo `codegen.py`.
+2.  **Primeira Tarefa:** Implementar um gerador de Código de Três Endereços (TAC).
+3.  **Ajuste Necessário:** Atualizar o `parser_.py` para incluir os comandos remanescentes (`while`, `print` e `read`) solicitados nos requisitos.
 
 
 ```sh
