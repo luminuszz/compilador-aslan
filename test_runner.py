@@ -4,6 +4,9 @@ import sys
 import os
 
 def run_tests():
+    src_dir = os.path.join(os.path.dirname(__file__), 'src')
+    sys.path.insert(0, src_dir)
+    
     # Adiciona o diretório atual ao path para encontrar os módulos de teste
     test_dir = os.path.join(os.path.dirname(__file__), 'tests')
     

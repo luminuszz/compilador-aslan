@@ -6,17 +6,23 @@
 
 Este projeto consiste no desenvolvimento de um compilador completo para uma linguagem de programação imperativa simples, utilizando exclusivamente Python e suas bibliotecas padrão.
 
+## 👥 Integrantes
+- Alison Oliveira
+- Maria Clara
+- Davi Ribeiro
+
 ## 🚀 Estrutura do Projeto
 
 ```
 /
-|-- lexer.py            # Fase 1: Analisador Léxico (Scanner)
-|-- parser_.py          # Fase 2: Analisador Sintático (Parser) e AST
-|-- semantic.py         # Fase 3: Analisador Semântico e Tabela de Símbolos
-|-- optimizer.py        # Bônus: Otimizador de AST (Constant Folding)
-|-- ir_generator.py     # Fase 4: Gerador de Código Intermediário (TAC)
-|-- code_generator.py   # Fase 5: Gerador de Bytecode
-|-- vm.py               # Fase 5: Máquina Virtual (Stack Machine)
+|-- src/
+|   |-- lexer.py            # Fase 1: Analisador Léxico (Scanner)
+|   |-- parser_.py          # Fase 2: Analisador Sintático (Parser) e AST
+|   |-- semantic.py         # Fase 3: Analisador Semântico e Tabela de Símbolos
+|   |-- optimizer.py        # Bônus: Otimizador de AST (Constant Folding)
+|   |-- ir_generator.py     # Fase 4: Gerador de Código Intermediário (TAC)
+|   |-- code_generator.py   # Fase 5: Gerador de Bytecode
+|   |-- vm.py               # Fase 5: Máquina Virtual (Stack Machine)
 |-- test_runner.py      # Executor central de testes
 |-- DOCS.md             # Documentação técnica detalhada
 |-- tests/              # Suíte de testes (61 casos automatizados)

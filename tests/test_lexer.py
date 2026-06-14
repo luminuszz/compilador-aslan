@@ -4,7 +4,7 @@ import sys
 import os
 
 # Adiciona o diretório pai ao sys.path para que possamos importar o lexer
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from lexer import Lexer, LexerError
 

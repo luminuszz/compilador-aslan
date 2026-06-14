@@ -8,25 +8,25 @@ O sistema segue a arquitetura de **Compilador de Passagem Única com Fases Indep
 [Código Fonte: String] 
          │
          ▼
-  (1) LEXER (lexer.py) ───────────────> [Fluxo de Tokens]
+  (1) LEXER (src/lexer.py) ─────────────> [Fluxo de Tokens]
          │
          ▼
-  (2) PARSER (parser_.py) ────────────> [AST (Árvore de Sintaxe Abstrata)]
+  (2) PARSER (src/parser_.py) ──────────> [AST (Árvore de Sintaxe Abstrata)]
          │
          ▼
-  (3) SEMÂNTICA (semantic.py) ────────> [AST Validada (Tipos e Escopos ok)]
+  (3) SEMÂNTICA (src/semantic.py) ──────> [AST Validada (Tipos e Escopos ok)]
          │
          ▼
-  (4) OTIMIZADOR (optimizer.py) ──────> [AST Simplificada (Constant Folding)]
+  (4) OTIMIZADOR (src/optimizer.py) ────> [AST Simplificada (Constant Folding)]
          │
          ▼
-  (5) IR GENERATOR (ir_generator.py) ─> [TAC (Código de Três Endereços)]
+  (5) IR GENERATOR (src/ir_generator.py) > [TAC (Código de Três Endereços)]
          │
          ▼
-  (6) CODE GENERATOR (code_gen.py) ───> [Bytecode (Endereços Resolvidos)]
+  (6) CODE GENERATOR (src/code_generator.py) > [Bytecode (Endereços Resolvidos)]
          │
          ▼
-  (7) VIRTUAL MACHINE (vm.py) ────────> [Execução na Memória / Saída I/O]
+  (7) VIRTUAL MACHINE (src/vm.py) ──────> [Execução na Memória / Saída I/O]
 ```
 
 ---
@@ -56,7 +56,7 @@ O parser foi construído com base na seguinte gramática livre de contexto:
 
 ## 3. Detalhamento dos Módulos
 
-### 3.1. Analisador Léxico (`lexer.py`)
+### 3.1. Analisador Léxico (`src/lexer.py`)
 *   **Responsabilidade:** Converter a *string* do código fonte em uma lista estruturada de `Tokens`, descartando espaços, quebras de linha e comentários (`//`).
 *   **Classes e Estruturas:**
     *   `Token(type, value, line, column)`: Objeto de transporte contendo os metadados do léxico.
@@ -64,7 +64,7 @@ O parser foi construído com base na seguinte gramática livre de contexto:
 *   **Como funciona (Método `tokenize`):** Utiliza a biblioteca `re` do Python. Constrói uma Mega-Regex usando *Named Capture Groups* (`(?P<TIPO>regex)`). O método usa `match.end()` para fatiar o código fonte iterativamente.
 *   **Tipos Tratados:** `INT`, `BOOL` (tipos); `IF`, `ELSE`, `WHILE`, `PRINT`, `READ` (palavras-chave); `MAIS`, `MENOS`, `MULT`, `DIV`, `IGUAL_COMP`, `DIFERENTE`, `MAIOR`, `MENOR` (operadores); numéricos inteiros, booleanos e strings puras.
 
-### 3.2. Analisador Sintático (`parser_.py`)
+### 3.2. Analisador Sintático (`src/parser_.py`)
 *   **Responsabilidade:** Implementar um Parser Descendente Recursivo preditivo (LL(1)) para transformar `List[Token]` em uma AST.
 *   **Classes de Nós (ASTNodes):** 
     *   *Nós de Expressão:* `Numero`, `Booleano`, `Identificador`, `OperacaoBinaria`.
@@ -73,7 +73,7 @@ O parser foi construído com base na seguinte gramática livre de contexto:
     *   `_consumir(tipo_esperado)`: Compara `token_atual.type`. Se casar, avança o ponteiro. Se falhar, levanta `ParserError`.
     *   A hierarquia de precedência de operadores é feita matematicamente através da cadeia de chamadas de métodos: `expressao()` -> `igualdade()` -> `comparacao()` -> `termo()` -> `fator()` -> `primario()`.
 
-### 3.3. Analisador Semântico (`semantic.py`)
+### 3.3. Analisador Semântico (`src/semantic.py`)
 *   **Responsabilidade:** Adicionar significado e validações lógicas à AST.
 *   **Classe `SymbolTable`:**
     *   Mantém o estado do escopo na propriedade `self.scopes` (uma Pilha de Dicionários `[{}]`).
@@ -88,13 +88,13 @@ O parser foi construído com base na seguinte gramática livre de contexto:
         2. Redeclaração no mesmo escopo; 
         3. Incompatibilidade de tipos (ex: `int x = true;` ou `while (10)`).
 
-### 3.4. Otimizador de Código (`optimizer.py`)
+### 3.4. Otimizador de Código (`src/optimizer.py`)
 *   **Responsabilidade:** Passagem opcional que reduz a carga de execução operando simplificações (*Constant Folding*) em tempo de compilação.
 *   **Funcionamento (Visitor):** 
     *   No método `visit_OperacaoBinaria`, ele resolve os ramos esquerdo e direito. 
     *   Se ambos retornarem nós literais (`Numero` ou `Booleano`), o compilador calcula o resultado em Python e **destrói** a árvore da `OperacaoBinaria`, retornando um único nó literal equivalente para o nó pai.
 
-### 3.5. Gerador de Código Intermediário (`ir_generator.py`)
+### 3.5. Gerador de Código Intermediário (`src/ir_generator.py`)
 *   **Responsabilidade:** Linearizar a AST para TAC (Código de Três Endereços).
 *   **Estruturas de Dados:**
     *   `self.instructions`: `List[Tuple]`.
@@ -103,13 +103,13 @@ O parser foi construído com base na seguinte gramática livre de contexto:
     *   *Expressão:* `10 + 5` -> `('MAIS', '10', '5', 't1')`
     *   *If-Else:* Avalia a condição, gera `('JUMP_IF_FALSE', cond_var, None, 'L_FALSE')`, visita corpo `THEN`, gera `JUMP L_END`, cria instrução `LABEL L_FALSE`, visita corpo `ELSE`, cria instrução `LABEL L_END`.
 
-### 3.6. Gerador de Código Final (`code_generator.py`)
+### 3.6. Gerador de Código Final (`src/code_generator.py`)
 *   **Responsabilidade:** Traduzir TAC generalista para as instruções de pilha específicas da nossa Máquina Virtual.
 *   **Algoritmo de Duas Passagens (2-Pass Resolution):**
     *   **Passagem 1:** Traduz as instruções (ex: `MAIS` -> `LOAD arg1`, `LOAD arg2`, `ADD`, `STORE result`). Ignora endereços de `JUMP`, mas anota o índice real da instrução na memória toda vez que encontra um `LABEL`.
     *   **Passagem 2:** Varre o Bytecode novamente, substituindo labels textuais (ex: `'L2'`) pelo índice inteiro absoluto da memória.
 
-### 3.7. Máquina Virtual (`vm.py`)
+### 3.7. Máquina Virtual (`src/vm.py`)
 *   **Responsabilidade:** Executar o Bytecode gerado utilizando a arquitetura Stack Machine (Pilha).
 *   **Estruturas de Memória:**
     *   `self.stack`: Lista LIFO `[]` que acumula valores soltos e operandos.
