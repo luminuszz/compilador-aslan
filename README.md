@@ -1,4 +1,4 @@
-# Compilador Didático em Python
+# Compilador ASLAN
 
 Este projeto consiste no desenvolvimento de um compilador completo para uma linguagem de programação imperativa simples, utilizando exclusivamente Python e suas bibliotecas padrão. O projeto foi construído seguindo rigorosos princípios de engenharia de software e teoria de linguagens formais.
 
@@ -72,8 +72,4 @@ Para uma análise profunda de cada classe, método e complexidade Big-O de cada 
 -   **✅ Otimização:** Implementação de *Constant Folding*.
 -   **✅ IR & Code Gen:** Geração de TAC e Bytecode resolvida.
 -   **✅ Máquina Virtual:** Execução funcional com suporte a `read` e `print`.
-
 ---
-
-## 🏁 Conclusão
-O projeto atingiu 100% dos requisitos obrigatórios e bônus, com **61 testes automatizados** garantindo que algoritmos como **Fibonacci**, **Fatorial** e **Bubble Sort** funcionem perfeitamente do código fonte à execução.

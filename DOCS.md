@@ -1,4 +1,4 @@
-# 📖 Documentação Técnica Completa: Compilador Didático
+# 📖 Documentação Técnica Completa: ASLAN
 
 ## 1. Arquitetura Geral e Fluxo de Dados (Pipeline)
 
