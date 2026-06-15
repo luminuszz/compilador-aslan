@@ -1,0 +1,22 @@
+// A Sociedade do Anel - O Abismo de Khazad-dûm
+poder_maia energia_gandalf = 100;
+poder_maia forca_balrog = 90;
+
+chama_de_udun escudo = fogo_secreto;
+
+cajado_brilha("O Balrog se aproxima com a chama de Udun!");
+
+nao_passara (energia_gandalf > forca_balrog) {
+    cajado_brilha("O fogo negro nao vai te ajudar, chama de Udun!");
+    cajado_brilha("Retorne a sombra!");
+} fuja_tolos {
+    cajado_brilha("Corram! A ponte vai cair!");
+}
+
+// A luta enquanto caem no abismo...
+queda_em_khazaddum (forca_balrog > 0) {
+    cajado_brilha("Gandalf ataca no ar...");
+    forca_balrog = forca_balrog - 30;
+}
+
+cajado_brilha("O Inimigo foi derrotado na Montanha Zirakzigil.");

@@ -17,7 +17,7 @@ def get_examples():
         return []
     return sorted([f for f in os.listdir(EXAMPLES_DIR) if f.endswith('.aslan')])
 
-def run_example(filepath):
+def run_example(filepath, theme='PADRAO'):
     """Exibe o código e executa um arquivo Aslan."""
     clear_screen()
     print(f"--- Visualizando Código: {os.path.basename(filepath)} ---")
@@ -37,14 +37,19 @@ def run_example(filepath):
     
     try:
         # Chama o compilador aslan.py via subprocesso
-        result = subprocess.run([sys.executable, COMPILER_SCRIPT, filepath], text=True)
+        cmd = [sys.executable, COMPILER_SCRIPT, filepath]
+        if theme == 'NARNIA':
+            cmd.append("--narnia")
+        elif theme == 'LOTR':
+            cmd.append("--lotr")
+        result = subprocess.run(cmd, text=True)
     except Exception as e:
         print(f"\nFalha crítica ao executar o compilador: {e}")
         
     print("-" * 50)
     input("\nPressione [ENTER] para voltar ao menu principal...")
 
-def create_custom_code():
+def create_custom_code(theme='PADRAO'):
     """Interface para digitar e rodar código Aslan customizado."""
     clear_screen()
     print("--- Editor Aslan Rápido ---")
@@ -74,14 +79,18 @@ def create_custom_code():
     try:
         with open(custom_path, 'w', encoding='utf-8') as f:
             f.write("\n".join(lines))
-        run_example(custom_path)
+        run_example(custom_path, theme)
     except Exception as e:
         print(f"Erro ao salvar arquivo temporário: {e}")
         input("\nPressione [ENTER] para voltar...")
 
 def main():
     """Loop principal do menu."""
+    themes = ['PADRAO', 'NARNIA', 'LOTR']
+    current_theme_index = 0
+    
     while True:
+        theme = themes[current_theme_index]
         clear_screen()
         print("========================================")
         print("      ASLAN COMPILER - DEMO CLI         ")
@@ -96,6 +105,7 @@ def main():
                 print(f" [{i}] {ex}")
                 
         print("-" * 40)
+        print(f" [M] Tema Atual: {theme}")
         print(" [N] Novo código (Criar e Rodar)")
         print(" [Q] Sair")
         print("-" * 40)
@@ -109,11 +119,13 @@ def main():
         if choice == 'Q':
             print("Saindo do demo. Até logo!")
             break
+        elif choice == 'M':
+            current_theme_index = (current_theme_index + 1) % len(themes)
         elif choice == 'N':
-            create_custom_code()
+            create_custom_code(theme)
         elif choice.isdigit() and 1 <= int(choice) <= len(examples):
             selected_file = examples[int(choice) - 1]
-            run_example(os.path.join(EXAMPLES_DIR, selected_file))
+            run_example(os.path.join(EXAMPLES_DIR, selected_file), theme)
         else:
             print("\nOpção inválida!")
             import time

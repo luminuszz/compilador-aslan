@@ -1,8 +1,10 @@
-int cavalo = 40;
-int cavalo2 = 20;
+int venda = 40;
+int custo = 40;
 
-if(cavalo > cavalo2) {
-    print("cavalo é maior que cavalo2");
+if(venda > custo) {
+    print("Deu lucro");
+} else if (venda == custo) {
+    print("Deu Empate");
 } else {
-    print("cavalo2 é maior ou igual a cavalo");
+    print("Deu Prejuizo");
 }

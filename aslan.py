@@ -8,18 +8,26 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src"
 from code_generator import CodeGenerator
 from ir_generator import IRGenerator
 from lexer import Lexer
+from lexer_narnia import LexerNarnia
+from lexer_lotr import LexerLotr
 from optimizer import Optimizer
 from parser_ import Parser
 from semantic import SemanticAnalyzer
 from vm import VirtualMachine
 
 
-def run(source_code, optimize=True, debug=False):
+def run(source_code, optimize=True, debug=False, use_narnia=False, use_lotr=False):
     try:
         if debug:
             print("--- TOKENS ---")
 
-        lexer = Lexer(source_code)
+        if use_narnia:
+            lexer = LexerNarnia(source_code)
+        elif use_lotr:
+            lexer = LexerLotr(source_code)
+        else:
+            lexer = Lexer(source_code)
+            
         tokens = lexer.tokenize()
 
         if debug:
@@ -90,6 +98,12 @@ def main():
     parser.add_argument(
         "--debug", action="store_true", help="Exibir informações de depuração"
     )
+    parser.add_argument(
+        "--narnia", "-n", action="store_true", help="Usar a sintaxe temática de Nárnia"
+    )
+    parser.add_argument(
+        "--lotr", "-l", action="store_true", help="Usar a sintaxe temática de Senhor dos Anéis"
+    )
 
     args = parser.parse_args()
 
@@ -104,7 +118,7 @@ def main():
         print(f"Erro ao ler arquivo: {e}", file=sys.stderr)
         sys.exit(1)
 
-    run(source_code, optimize=args.optimize, debug=args.debug)
+    run(source_code, optimize=args.optimize, debug=args.debug, use_narnia=args.narnia, use_lotr=args.lotr)
 
 
 if __name__ == "__main__":

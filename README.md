@@ -33,7 +33,7 @@ Este projeto consiste no desenvolvimento de um compilador completo para uma ling
 |-- README.md            # Guia de apresentação e visão geral
 ```
 
-## 🎮 Demonstração Interativa
+## 🎮 Demonstração Interativa e Temas
 
 Para explorar os exemplos da linguagem e criar seus próprios códigos de forma interativa, execute:
 
@@ -41,7 +41,11 @@ Para explorar os exemplos da linguagem e criar seus próprios códigos de forma 
 python3 demo.py
 ```
 
-O script permite listar exemplos clássicos (Fibonacci, Ordenação, etc.), visualizar o código-fonte e rodá-los imediatamente na VM.
+O script permite listar exemplos clássicos (Fibonacci, Ordenação, etc.), visualizar o código-fonte e rodá-los imediatamente na VM. Você também pode alternar entre os **Temas de Sintaxe**:
+
+1. **Padrão**: Inglês tradicional (int, if, while).
+2. **Nárnia**: Inspirado nas Crônicas de Nárnia (rei_pedro, pela_juba_do_leao). Pode ser rodado no terminal com `python3 aslan.py arquivo.aslan --narnia`
+3. **Senhor dos Anéis**: Inspirado na luta de Gandalf e o Balrog (poder_maia, nao_passara). Pode ser rodado no terminal com `python3 aslan.py arquivo.aslan --lotr`
 
 ## 🛠️ Como Executar os Testes
 

@@ -1,0 +1,21 @@
+
+rei_pedro espadas = 10;
+rainha_lucia confia = verdade_de_aslan;
+
+pela_juba_do_leao (espadas >= 5) {
+    proclamar("Aslan esta em movimento!");
+} pelo_rei_caspian {
+    proclamar("O inverno persiste...");
+}
+
+rei_pedro ano = 1;
+durante_o_reinado (ano <= 3) {
+    proclamar("Longo viva o Rei!");
+    ano = ano + 1;
+}
+
+// Feitiçaria detectada?
+rainha_lucia traicao = mentira_de_edmundo;
+pela_juba_do_leao (traicao == mentira_de_edmundo) {
+    proclamar("Edmundo se arrependeu e foi perdoado.");
+}
