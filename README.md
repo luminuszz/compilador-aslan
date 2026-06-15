@@ -60,13 +60,28 @@ Os temas também podem ser usados via linha de comando:
    python3 aslan.py arquivo.aslan --lotr
    ```
 
-## 🛠️ Como Executar os Testes
+   ## 🐳 Usando com Docker
 
-Para validar a integridade de todas as fases do compilador, execute:
+   Se preferir rodar o projeto sem configurar um ambiente Python local, você pode usar o Docker:
 
-```sh
-python3 test_runner.py
-```
+   1. **Demonstração Interativa**:
+      ```sh
+      docker compose up
+      ```
+      *(Pressione as teclas normalmente no terminal para interagir com o menu)*
+
+   2. **Executar Testes**:
+      ```sh
+      docker compose run --rm aslan python3 test_runner.py
+      ```
+
+   ## 🛠️ Como Executar os Testes
+
+   Para validar a integridade de todas as fases do compilador sem Docker, execute:
+
+   ```sh
+   python3 test_runner.py
+   ```
 
 ## 📝 Documentação Detalhada (Módulos)
 

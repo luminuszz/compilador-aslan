@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  aslan:
+    build: .
+    image: aslan-compiler:latest
+    container_name: aslan_container
+    # Permite interação via terminal (necessário para o demo.py e inputs)
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+    command: python3 demo.py
