@@ -1,0 +1,9 @@
+int a = 40; int b = 10; int c = 30; int d = 20;
+int i = 0;
+while (i < 4) {
+    if (a > b) { int t = a; a = b; b = t; }
+    if (b > c) { int t = b; b = c; c = t; }
+    if (c > d) { int t = c; c = d; d = t; }
+    i = i + 1;
+}
+print(a); print(b); print(c); print(d);

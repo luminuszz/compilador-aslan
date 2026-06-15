@@ -1,0 +1,6 @@
+int v0 = 1; int v1 = 3; int v2 = 5; int v3 = 7; int v4 = 9;
+int target = 7;
+int result = 0;
+if (v2 == target) { result = 2; }
+if (v3 == target) { result = 3; }
+print(result);

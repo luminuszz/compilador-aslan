@@ -1,0 +1,28 @@
+// LeetCode 9: Palindrome Number
+int x = 121;
+bool is_palindrome = false;
+
+if (x < 0) {
+    is_palindrome = false;
+} else {
+    int original = x;
+    int reversed = 0;
+    int temp = x;
+    
+    while (temp > 0) {
+        // Obter ultimo digito simulando modulo: temp % 10
+        int div10 = temp / 10;
+        int digit = temp - (div10 * 10);
+        
+        reversed = (reversed * 10) + digit;
+        temp = div10;
+    }
+    
+    if (original == reversed) {
+        is_palindrome = true;
+    } else {
+        is_palindrome = false;
+    }
+}
+
+print(is_palindrome);

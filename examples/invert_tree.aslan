@@ -1,0 +1,12 @@
+int root = 1;
+int left = 2;
+int right = 3;
+
+// Inversão: swap(left, right)
+int temp = left;
+left = right;
+right = temp;
+
+print(root);
+print(left);
+print(right);

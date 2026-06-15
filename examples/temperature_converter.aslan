@@ -1,0 +1,7 @@
+// Conversor de Celsius para Fahrenheit
+// Formula: F = (C * 9 / 5) + 32
+int celsius = 25;
+int fahrenheit = (celsius * 9 / 5) + 32;
+
+print(celsius);
+print(fahrenheit);

@@ -38,13 +38,14 @@ class CodeGenerator:
                 self.get_value(arg1)
                 self.bytecode.append(('STORE', result))
 
-            elif opcode in ('MAIS', 'MENOS', 'MULT', 'DIV', 'MAIOR', 'MENOR', 'IGUAL_COMP'):
+            elif opcode in ('MAIS', 'MENOS', 'MULT', 'DIV', 'MAIOR', 'MENOR', 'IGUAL_COMP', 'DIFERENTE', 'MAIOR_IGUAL', 'MENOR_IGUAL'):
                 self.get_value(arg1)
                 self.get_value(arg2)
                 
                 op_map = {
                     'MAIS': 'ADD', 'MENOS': 'SUB', 'MULT': 'MUL', 'DIV': 'DIV',
-                    'MAIOR': 'CMP_GT', 'MENOR': 'CMP_LT', 'IGUAL_COMP': 'CMP_EQ'
+                    'MAIOR': 'CMP_GT', 'MENOR': 'CMP_LT', 'IGUAL_COMP': 'CMP_EQ',
+                    'DIFERENTE': 'CMP_NE', 'MAIOR_IGUAL': 'CMP_GE', 'MENOR_IGUAL': 'CMP_LE'
                 }
                 self.bytecode.append((op_map[opcode],))
                 self.bytecode.append(('STORE', result))

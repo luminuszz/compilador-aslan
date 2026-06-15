@@ -68,6 +68,21 @@ class VirtualMachine:
             a = self.stack.pop()
             self.stack.append(a == b)
             
+        elif opcode == 'CMP_NE':
+            b = self.stack.pop()
+            a = self.stack.pop()
+            self.stack.append(a != b)
+
+        elif opcode == 'CMP_GE':
+            b = self.stack.pop()
+            a = self.stack.pop()
+            self.stack.append(int(a) >= int(b))
+
+        elif opcode == 'CMP_LE':
+            b = self.stack.pop()
+            a = self.stack.pop()
+            self.stack.append(int(a) <= int(b))
+            
         elif opcode == 'JUMP':
             self.pc = arg - 1
             

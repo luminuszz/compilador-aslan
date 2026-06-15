@@ -1,0 +1,13 @@
+// Simulador de Saque: Quantidade de notas de 50 e 10
+int valor = 170;
+
+int notas50 = valor / 50;
+int resto50 = valor - (notas50 * 50);
+
+int notas10 = resto50 / 10;
+int resto10 = resto50 - (notas10 * 10);
+
+print(valor);
+print(notas50);
+print(notas10);
+print(resto10);
