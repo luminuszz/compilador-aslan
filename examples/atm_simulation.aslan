@@ -1,4 +1,3 @@
-// Simulador de Saque: Quantidade de notas de 50 e 10
 int valor = 170;
 
 int notas50 = valor / 50;

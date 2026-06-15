@@ -39,6 +39,11 @@ class Numero(ASTNode):
         self.token = token
         self.valor = int(token.value)
 
+class Texto(ASTNode):
+    def __init__(self, token: Token):
+        self.token = token
+        self.valor = token.value.strip('"')
+
 class Booleano(ASTNode):
     def __init__(self, token: Token):
         self.token = token
@@ -225,6 +230,9 @@ class Parser:
         if token.type == 'NUMERO':
             self._consumir('NUMERO')
             return Numero(token)
+        elif token.type == 'STRING':
+            self._consumir('STRING')
+            return Texto(token)
         elif token.type in ('TRUE', 'FALSE'):
             self._consumir(token.type)
             return Booleano(token)
@@ -242,3 +250,4 @@ class Parser:
         token = self.token_atual
         self._consumir('IDENTIFICADOR')
         return Identificador(token)
+

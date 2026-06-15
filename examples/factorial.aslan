@@ -1,4 +1,3 @@
-// Algoritmo Classico: Fatorial
 int n = 5;
 int result = 1;
 

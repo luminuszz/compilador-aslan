@@ -57,5 +57,28 @@ class TestCodeGenerator(unittest.TestCase):
         ]
         self.assertEqual(bytecode, expected)
 
+    def test_string_translation(self):
+        """Testa a tradução de strings (TAC com aspas -> Bytecode PUSH puro)."""
+        tac = [('PRINT', '"ola"', None, None)]
+        cg = CodeGenerator(tac)
+        bytecode = cg.generate()
+        expected = [('PUSH', 'ola'), ('PRINT',)]
+        self.assertEqual(bytecode, expected)
+
+    def test_new_comparisons_translation(self):
+        """Testa se os novos operadores de comparação são traduzidos para as instruções corretas."""
+        tac = [
+            ('MAIOR_IGUAL', 'a', 'b', 't1'),
+            ('MENOR_IGUAL', 'c', 'd', 't2'),
+            ('DIFERENTE', 'e', 'f', 't3')
+        ]
+        cg = CodeGenerator(tac)
+        bytecode = cg.generate()
+        
+        # Cada operação binária gera: LOAD arg1, LOAD arg2, OP, STORE res
+        self.assertEqual(bytecode[2], ('CMP_GE',))
+        self.assertEqual(bytecode[6], ('CMP_LE',))
+        self.assertEqual(bytecode[10], ('CMP_NE',))
+
 if __name__ == '__main__':
     unittest.main()

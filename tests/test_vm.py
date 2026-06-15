@@ -38,24 +38,42 @@ class TestVM(unittest.TestCase):
 
     def test_jump_if_false(self):
         """Testa o salto condicional."""
-        # if (false) { print(1) } print(0)
-        # 0: PUSH false
-        # 1: JUMP_IF_FALSE 4
-        # 2: PUSH 1
-        # 3: PRINT
-        # 4: PUSH 0
-        # 5: PRINT
         bytecode = [
             ('PUSH', False),
             ('JUMP_IF_FALSE', 4),
             ('PUSH', 1),
             ('PRINT',),
             ('PUSH', 0),
-            ('PRINT',)
+            ('PRINT',),
         ]
         vm = VirtualMachine(bytecode)
         vm.run()
         self.assertEqual(vm.output, ['0'])
+
+    def test_vm_string_support(self):
+        """Testa se a VM imprime strings corretamente."""
+        bytecode = [('PUSH', 'Olá Mundo'), ('PRINT',)]
+        vm = VirtualMachine(bytecode)
+        vm.run()
+        self.assertEqual(vm.output, ['Olá Mundo'])
+
+    def test_vm_new_comparisons(self):
+        """Testa as instruções CMP_GE, CMP_LE e CMP_NE na VM."""
+        test_cases = [
+            (10, 10, 'CMP_GE', True),
+            (10, 5, 'CMP_GE', True),
+            (5, 10, 'CMP_GE', False),
+            (5, 10, 'CMP_LE', True),
+            (10, 10, 'CMP_LE', True),
+            (10, 5, 'CMP_LE', False),
+            (5, 10, 'CMP_NE', True),
+            (10, 10, 'CMP_NE', False),
+        ]
+        for a, b, op, expected in test_cases:
+            bytecode = [('PUSH', a), ('PUSH', b), (op,), ('PRINT',)]
+            vm = VirtualMachine(bytecode)
+            vm.run()
+            self.assertEqual(vm.output[-1], str(expected))
 
 if __name__ == '__main__':
     unittest.main()

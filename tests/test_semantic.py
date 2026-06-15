@@ -68,5 +68,33 @@ class TestSemanticAnalyzer(unittest.TestCase):
         with self.assertRaisesRegex(SemanticError, "Erro: Tipo incompatível para a variável 'x'. Esperado 'INT', mas recebeu 'BOOL'."):
             analyzer.visit(ast)
 
+    def test_semantic_string_literal(self):
+        """Verifica se literais de string são processados corretamente."""
+        code = 'print("teste");'
+        ast = self._build_ast(code)
+        analyzer = SemanticAnalyzer()
+        # Não deve levantar erro
+        analyzer.visit(ast)
+
+    def test_semantic_new_comparisons(self):
+        """Verifica se os novos operadores de comparação validam tipos corretamente."""
+        valid_codes = [
+            "bool r = (10 >= 5);",
+            "bool r = (5 <= 10);",
+            "bool r = (5 != 10);",
+            "bool r = (true == false);",
+            "bool r = (true != false);"
+        ]
+        for code in valid_codes:
+            ast = self._build_ast(code)
+            analyzer = SemanticAnalyzer()
+            analyzer.visit(ast)
+
+        invalid_code = "bool r = (10 >= true);"
+        ast = self._build_ast(invalid_code)
+        analyzer = SemanticAnalyzer()
+        with self.assertRaisesRegex(SemanticError, "Erro: Operação de comparação 'MAIOR_IGUAL' exige operandos do tipo 'INT'."):
+            analyzer.visit(ast)
+
 if __name__ == '__main__':
     unittest.main()

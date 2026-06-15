@@ -62,12 +62,12 @@ O parser foi construído com base na seguinte gramática livre de contexto:
     *   `Token(type, value, line, column)`: Objeto de transporte contendo os metadados do léxico.
     *   `LexerError(Exception)`: Exceção customizada para caracteres inválidos.
 *   **Como funciona (Método `tokenize`):** Utiliza a biblioteca `re` do Python. Constrói uma Mega-Regex usando *Named Capture Groups* (`(?P<TIPO>regex)`). O método usa `match.end()` para fatiar o código fonte iterativamente.
-*   **Tipos Tratados:** `INT`, `BOOL` (tipos); `IF`, `ELSE`, `WHILE`, `PRINT`, `READ` (palavras-chave); `MAIS`, `MENOS`, `MULT`, `DIV`, `IGUAL_COMP`, `DIFERENTE`, `MAIOR`, `MENOR` (operadores); numéricos inteiros, booleanos e strings puras.
+*   **Tipos Tratados:** `INT`, `BOOL`, `STRING` (tipos); `IF`, `ELSE`, `WHILE`, `PRINT`, `READ` (palavras-chave); `MAIS`, `MENOS`, `MULT`, `DIV`, `IGUAL_COMP`, `DIFERENTE`, `MAIOR`, `MENOR`, `MAIOR_IGUAL`, `MENOR_IGUAL` (operadores); numéricos inteiros, booleanos e strings delimitadas por aspas duplas.
 
 ### 3.2. Analisador Sintático (`src/parser_.py`)
 *   **Responsabilidade:** Implementar um Parser Descendente Recursivo preditivo (LL(1)) para transformar `List[Token]` em uma AST.
 *   **Classes de Nós (ASTNodes):** 
-    *   *Nós de Expressão:* `Numero`, `Booleano`, `Identificador`, `OperacaoBinaria`.
+    *   *Nós de Expressão:* `Numero`, `Texto` (String), `Booleano`, `Identificador`, `OperacaoBinaria`.
     *   *Nós de Comando:* `DeclaracaoVariavel`, `Atribuicao`, `ComandoIf`, `ComandoWhile`, `ComandoPrint`, `ComandoRead`, `Bloco`.
 *   **Métodos Principais:**
     *   `_consumir(tipo_esperado)`: Compara `token_atual.type`. Se casar, avança o ponteiro. Se falhar, levanta `ParserError`.
@@ -80,14 +80,14 @@ O parser foi construído com base na seguinte gramática livre de contexto:
     *   `enter_scope()`: Dá `.append({})`.
     *   `leave_scope()`: Dá `.pop()`. Garante que variáveis locais morram ao sair de blocos.
     *   `lookup(name)`: Busca de cima para baixo (`reversed(self.scopes)`).
-*   **Classe `SemanticAnalyzer` (Implementa o padrão *Visitor*):**
+    *   **Classe `SemanticAnalyzer` (Implementa o padrão *Visitor*):**
     *   Possui métodos `visit_NomeDoNo(node)`.
-    *   *Type Checking:* Retorna os tipos lógicos (`'INT'` ou `'BOOL'`) a cada visita. Avalia regras como: `(INT) MAIS (INT) -> INT`.
+    *   *Type Checking:* Retorna os tipos lógicos (`'INT'`, `'BOOL'` ou `'STRING'`) a cada visita. Avalia regras como: `(INT) MAIS (INT) -> INT` e validações de igualdade entre tipos compatíveis.
     *   Levanta `SemanticError` em três casos principais: 
+    ...
         1. Variável não declarada; 
         2. Redeclaração no mesmo escopo; 
         3. Incompatibilidade de tipos (ex: `int x = true;` ou `while (10)`).
-
 ### 3.4. Otimizador de Código (`src/optimizer.py`)
 *   **Responsabilidade:** Passagem opcional que reduz a carga de execução operando simplificações (*Constant Folding*) em tempo de compilação.
 *   **Funcionamento (Visitor):** 
@@ -168,3 +168,4 @@ VirtualMachine(bytecode).run()
 | **IR Gen.** | Linearização AST | $O(N_{ast})$ | $O(I_{tac})$ | Percorre a AST uma vez, gerando $I_{tac}$ instruções na memória. |
 | **Code Gen.**| Array de Tuplas (2-Pass)| $O(I_{tac})$ | $O(I_{byte})$ | A primeira e segunda passagem são estritamente lineares. Uso de dict de labels torna a Passagem 2 $O(1)$ por resolução de endereço. |
 | **VM Execution**| Loop Fetch-Decode | $O(E)$ | $O(V_{exec} + P)$ | Depende do Algoritmo compilado ($E$ iterações). Uso de Pilha ($P$) e Memória local ($V_{exec}$). Eficiente em $O(1)$ por ciclo de clock virtual, o overhead vem do loop da linguagem host (Python). |
+r ciclo de clock virtual, o overhead vem do loop da linguagem host (Python). |

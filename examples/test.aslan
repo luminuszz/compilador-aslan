@@ -1,0 +1,8 @@
+int cavalo = 40;
+int cavalo2 = 20;
+
+if(cavalo > cavalo2) {
+    print("cavalo é maior que cavalo2");
+} else {
+    print("cavalo2 é maior ou igual a cavalo");
+}

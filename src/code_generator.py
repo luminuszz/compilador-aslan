@@ -7,8 +7,10 @@ class CodeGenerator:
         self.labels = {}
 
     def is_literal(self, value):
-        """Verifica se o valor é um literal (número ou booleano)."""
+        """Verifica se o valor é um literal (número, booleano ou string)."""
         if value in ('true', 'false'):
+            return True
+        if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
             return True
         try:
             int(value)
@@ -19,7 +21,10 @@ class CodeGenerator:
     def get_value(self, value):
         """Gera instrução para colocar o valor na pilha (PUSH ou LOAD)."""
         if self.is_literal(value):
-            val = int(value) if value not in ('true', 'false') else (value == 'true')
+            if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
+                val = value[1:-1]
+            else:
+                val = int(value) if value not in ('true', 'false') else (value == 'true')
             self.bytecode.append(('PUSH', val))
         else:
             self.bytecode.append(('LOAD', value))

@@ -7,10 +7,37 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 's
 from lexer import Lexer
 from parser_ import (
     Parser, DeclaracaoVariavel, Numero, Identificador, OperacaoBinaria, 
-    ComandoIf, Bloco, ComandoWhile, ComandoPrint, ComandoRead, Atribuicao, Booleano
+    ComandoIf, Bloco, ComandoWhile, ComandoPrint, ComandoRead, Atribuicao, Booleano, Texto
 )
 
 class TestParser(unittest.TestCase):
+
+    def test_parser_texto(self):
+        code = 'print("ola mundo");'
+        lexer = Lexer(code)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+
+        comando = ast.declaracoes[0]
+        self.assertIsInstance(comando, ComandoPrint)
+        self.assertIsInstance(comando.expressao, Texto)
+        self.assertEqual(comando.expressao.valor, "ola mundo")
+
+    def test_expressao_comparacao_ge_le_ne(self):
+        tests = [
+            ("bool r1 = 10 >= 5;", 'MAIOR_IGUAL'),
+            ("bool r2 = 5 <= 10;", 'MENOR_IGUAL'),
+            ("bool r3 = 5 != 10;", 'DIFERENTE'),
+        ]
+        for code, op_type in tests:
+            lexer = Lexer(code)
+            tokens = lexer.tokenize()
+            parser = Parser(tokens)
+            ast = parser.parse()
+            expr = ast.declaracoes[0].expressao
+            self.assertIsInstance(expr, OperacaoBinaria)
+            self.assertEqual(expr.op.type, op_type)
 
     def test_declaracao_variavel(self):
         code = "int x = 10;"

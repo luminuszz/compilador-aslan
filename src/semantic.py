@@ -167,5 +167,8 @@ class SemanticAnalyzer:
     def visit_Numero(self, node):
         return "INT"
 
+    def visit_Texto(self, node):
+        return "STRING"
+
     def visit_Booleano(self, node):
         return "BOOL"

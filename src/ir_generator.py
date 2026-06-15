@@ -98,6 +98,9 @@ class IRGenerator:
     def visit_Numero(self, node):
         return str(node.valor)
 
+    def visit_Texto(self, node):
+        return f'"{node.valor}"'
+
     def visit_Identificador(self, node):
         return node.nome
 

@@ -1,4 +1,3 @@
-// LeetCode 231: Power of Two
 int n = 16;
 bool is_power = false;
 
@@ -6,13 +5,12 @@ if (n <= 0) {
     is_power = false;
 } else {
     while (n > 1) {
-        // Simulando modulo: n % 2
         int half = n / 2;
         int rem = n - (half * 2);
         
         if (rem != 0) {
             is_power = false;
-            n = 0; // forcar saida do loop
+            n = 0;
         } else {
             n = half;
         }

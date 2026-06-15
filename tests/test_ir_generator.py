@@ -30,10 +30,6 @@ class TestIRGenerator(unittest.TestCase):
         """Testa a geração de TAC para uma expressão aritmética simples."""
         code = "int x = 10 + 5;"
         ir = self._generate_ir(code)
-
-        # Esperado:
-        # t1 = 10 + 5
-        # x = t1
         expected = [("MAIS", "10", "5", "t1"), ("ASSIGN", "t1", None, "x")]
         self.assertEqual(ir, expected)
 
@@ -41,8 +37,6 @@ class TestIRGenerator(unittest.TestCase):
         """Testa a geração de TAC para uma atribuição simples."""
         code = "int x; x = 20;"
         ir = self._generate_ir(code)
-
-        # Esperado: x = 20
         expected = [("ASSIGN", "20", None, "x")]
         self.assertEqual(ir, expected)
 
@@ -50,11 +44,6 @@ class TestIRGenerator(unittest.TestCase):
         """Testa a geração de TAC para comandos print e read."""
         code = "int x; read(x); print(x + 1);"
         ir = self._generate_ir(code)
-
-        # Esperado:
-        # read x
-        # t1 = x + 1
-        # print t1
         expected = [
             ("READ", None, None, "x"),
             ("MAIS", "x", "1", "t1"),
@@ -73,16 +62,6 @@ class TestIRGenerator(unittest.TestCase):
         }
         """
         ir = self._generate_ir(code)
-
-        # Esperado (exemplo):
-        # x = 10
-        # t1 = x > 0
-        # jump_if_false t1 L1
-        # print 1
-        # jump L2
-        # label L1
-        # print 0
-        # label L2
         expected = [
             ("ASSIGN", "10", None, "x"),
             ("MAIOR", "x", "0", "t1"),
@@ -105,17 +84,6 @@ class TestIRGenerator(unittest.TestCase):
         }
         """
         ir = self._generate_ir(code)
-
-        # Esperado (exemplo):
-        # i = 0
-        # label L1
-        # t1 = i < 3
-        # jump_if_false t1 L2
-        # print i
-        # t2 = i + 1
-        # i = t2
-        # jump L1
-        # label L2
         expected = [
             ("ASSIGN", "0", None, "i"),
             ("LABEL", "L1", None, None),
@@ -128,6 +96,20 @@ class TestIRGenerator(unittest.TestCase):
             ("LABEL", "L2", None, None),
         ]
         self.assertEqual(ir, expected)
+
+    def test_string_ir(self):
+        """Testa se strings literais são preservadas com aspas no TAC."""
+        code = 'print("hello");'
+        ir = self._generate_ir(code)
+        expected = [("PRINT", '"hello"', None, None)]
+        self.assertEqual(ir, expected)
+
+    def test_new_comparisons_ir(self):
+        """Testa a geração de TAC para os novos operadores de comparação."""
+        code = "int x = 1; int y = 2; bool r = (x >= y); int a = 3; int b = 4; bool r2 = (a != b);"
+        ir = self._generate_ir(code)
+        self.assertEqual(ir[2], ("MAIOR_IGUAL", "x", "y", "t1"))
+        self.assertEqual(ir[6], ("DIFERENTE", "a", "b", "t2"))
 
 
 if __name__ == "__main__":

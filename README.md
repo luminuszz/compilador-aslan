@@ -23,12 +23,25 @@ Este projeto consiste no desenvolvimento de um compilador completo para uma ling
 |   |-- ir_generator.py     # Fase 4: Gerador de Código Intermediário (TAC)
 |   |-- code_generator.py   # Fase 5: Gerador de Bytecode
 |   |-- vm.py               # Fase 5: Máquina Virtual (Stack Machine)
-|-- test_runner.py      # Executor central de testes
-|-- DOCS.md             # Documentação técnica detalhada
-|-- tests/              # Suíte de testes (61 casos automatizados)
-|-- .gitignore          # Configurações de repositório
-|-- README.md           # Guia de apresentação e visão geral
+|-- aslan.py             # Script principal de execução
+|-- demo.py              # Script interativo de demonstração
+|-- test_runner.py       # Executor central de testes
+|-- DOCS.md              # Documentação técnica detalhada
+|-- examples/            # Galeria de exemplos (.aslan)
+|-- tests/               # Suíte de testes (74 casos automatizados)
+|-- .gitignore           # Configurações de repositório
+|-- README.md            # Guia de apresentação e visão geral
 ```
+
+## 🎮 Demonstração Interativa
+
+Para explorar os exemplos da linguagem e criar seus próprios códigos de forma interativa, execute:
+
+```sh
+python3 demo.py
+```
+
+O script permite listar exemplos clássicos (Fibonacci, Ordenação, etc.), visualizar o código-fonte e rodá-los imediatamente na VM.
 
 ## 🛠️ Como Executar os Testes
 
